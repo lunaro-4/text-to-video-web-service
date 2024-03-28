@@ -13,7 +13,7 @@ from PIL import ImageDraw
 
 SIZE = (100,100)
 FPS = 20
-LENGH_IN_SECONDS = 1
+LENGH_IN_SECONDS = 3
 
 
 frames_folder = "frames/"
@@ -79,7 +79,6 @@ class RenderTools(object):
 
 def cli_arg_handling():
     args = sys.argv
-    print(len(args))
     if len(args) != 3:
         print("Usage: script.py \"text for animation\" output.mp4")
         exit()
@@ -91,7 +90,6 @@ if __name__ == "__main__":
     (text, outp) = cli_arg_handling()
     base_img = BaseTextImage(text, "tnr.ttf").img
     #base_img.save("base_img.png", "png")
-    RenderTools.render_part(base_img, 5).save("func_crop.png","png")
     RenderTools.part_render_loop(base_img, frames_folder)
     RenderTools.render_video(frames_folder,outp).release()
 
