@@ -1,9 +1,14 @@
 #!.venv/bin/python
+
+
+import cv2
+import glob
+import os
 from PIL import Image
 from PIL import ImageFont
 from PIL import ImageDraw
 
-import os, sys
+
 
 
 SIZE = (100,100)
@@ -40,6 +45,8 @@ class BaseTextImage(object):
         self.add_text()
 
 
+
+
 class RenderTools(object):
     @staticmethod
     def render_part(base_img : Image.Image, left_coord: float) -> Image.Image:
@@ -56,8 +63,18 @@ class RenderTools(object):
         for frame in range(total_frames):
             shot = RenderTools.render_part(base_img,offset*frame) 
             shot.save(f"{frames_folder}{frame}.png","png")
-        pass
 
+    @staticmethod
+    def render_video(frames_folder: str, outp_path:str):
+        frames_list = sorted(glob.glob(str(frames_folder + '*.png')), key=len)
+
+        fourcc = cv2.VideoWriter_fourcc(*'mp4v')
+        video_writer = cv2.VideoWriter(outp_path, fourcc, FPS, SIZE)
+
+        for frame_path in frames_list:
+            frame = cv2.imread(frame_path)
+            video_writer.write(frame)
+        return video_writer
 
 
 if __name__ == "__main__":
@@ -65,4 +82,16 @@ if __name__ == "__main__":
     base_img.save("base_img.png", "png")
     RenderTools.render_part(base_img, 5).save("func_crop.png","png")
     RenderTools.part_render_loop(base_img, frames_folder)
+    RenderTools.render_video(frames_folder,"video.mp4").release()
+
+
+
+
+
+
+
+
+
+
+
 
