@@ -17,6 +17,9 @@ outfile = "image.png"
 
 
 class BaseTextImage(object):
+
+    def save_image(self,outfile):
+        self.img.save(outfile, "png")
     def scale_image(self):
         while self.img.size[0] < self.font.getlength(text):
             self.img = Image.new("RGB", (self.img.size[0]+1,self.img.size[1]))
@@ -32,9 +35,23 @@ class BaseTextImage(object):
         self.text = text
         self.scale_image()
         self.add_text()
-        self.img.save(outfile, "png")
 
 
-base_img = BaseTextImage(text, "tnr.ttf")
 
+def render_part(base_img : Image.Image, left_coord: float) -> Image.Image:
+    right_coord = left_coord + SIZE[0]
+    croped = base_img.crop((int(left_coord), int(0), int(right_coord), int(SIZE[1]))) 
+    return croped
+
+
+
+
+if __name__ == "__main__":
+    base_img = BaseTextImage(text, "tnr.ttf")
+    base_img.save_image(outfile)
+    cords = (0,0,100,100)
+    with Image.open(outfile) as base_img:
+        im_crop=base_img.crop(cords)
+        render_part(base_img, 5).save("func_crop.png","png")
+        im_crop.save("croped.png", "png")
 
