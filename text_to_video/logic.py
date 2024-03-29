@@ -88,13 +88,13 @@ def cli_arg_handling():
 def main(text, outp = "outp.mp4", size = SIZE, fps = FPS):
     base_img = BaseTextImage(text, "tnr.ttf").img
     RenderTools.part_render_loop(base_img, frames_folder)
-    RenderTools.render_video(frames_folder,outp, size, fps).release()
+    return RenderTools.render_video(frames_folder,outp, size, fps)
 
 
 
 if __name__ == "__main__":
     (text, outp) = cli_arg_handling()
-    main(text,outp)
+    main(text,outp).release()
 
 
 
