@@ -4,6 +4,7 @@
 import cv2
 import glob
 import os, sys
+import shutil
 from PIL import Image
 from PIL import ImageFont
 from PIL import ImageDraw
@@ -11,9 +12,9 @@ from PIL import ImageDraw
 
 
 
-SIZE = (100,100)
-FPS = 20
-LENGH_IN_SECONDS = 3
+SIZE = (int(100),int(100))
+FPS = int(20)
+LENGH_IN_SECONDS = int(3)
 
 
 frames_folder = "frames/"
@@ -35,8 +36,8 @@ class BaseTextImage(object):
         draw = ImageDraw.Draw(self.img)
         draw.text((0,0),self.text,(255,255,255),self.font)
 
-    def __init__(self, text, font):
-        img = Image.new("RGB", SIZE)
+    def __init__(self, text, font, size = SIZE):
+        img = Image.new("RGB", size)
         self.img = img
         self.font = ImageFont.truetype(font, 90)
         self.text = text
@@ -48,25 +49,25 @@ class BaseTextImage(object):
 
 class RenderTools(object):
     @staticmethod
-    def render_part(base_img : Image.Image, left_coord: float, margin: int = SIZE[0]) -> Image.Image:
+    def render_part(base_img : Image.Image, left_coord: float,
+                    margin: int = SIZE[0], down_margin : int = SIZE[1]) -> Image.Image:
         right_coord = left_coord + margin
-        croped = base_img.crop((int(left_coord), int(0), int(right_coord), int(SIZE[1]))) 
+        croped = base_img.crop((int(left_coord), int(0), int(right_coord), int(down_margin))) 
         return croped
 
     @staticmethod
-    def part_render_loop(base_img : Image.Image, save_folder: str, fps : int = FPS, length : int = LENGH_IN_SECONDS):
+    def part_render_loop(base_img : Image.Image, save_folder: str, size, fps: int , length : int = LENGH_IN_SECONDS):
         if not os.path.isdir(save_folder):
             os.makedirs(save_folder)
         total_frames = fps * length
         offset = base_img.size[0]/total_frames
         for frame in range(total_frames):
-            shot = RenderTools.render_part(base_img,offset*frame) 
+            shot = RenderTools.render_part(base_img,offset*frame, size[0], size[1]) 
             shot.save(f"{frames_folder}{frame}.png","png")
 
     @staticmethod
     def render_video(frames_folder: str, outp_path:str, size, fps):
         frames_list = sorted(glob.glob(str(frames_folder + '*.png')), key=len)
-
         fourcc = cv2.VideoWriter_fourcc(*'mp4v')
         video_writer = cv2.VideoWriter(outp_path, fourcc, fps, size)
 
@@ -86,8 +87,13 @@ def cli_arg_handling():
     
 
 def main(text, outp = "outp.mp4", size = SIZE, fps = FPS):
+    if size == None:
+        size = SIZE
+    if fps == None:
+        fps = FPS
     base_img = BaseTextImage(text, "tnr.ttf").img
-    RenderTools.part_render_loop(base_img, frames_folder)
+    shutil.rmtree(frames_folder) 
+    RenderTools.part_render_loop(base_img, frames_folder, size, fps)
     return RenderTools.render_video(frames_folder,outp, size, fps)
 
 
