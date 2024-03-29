@@ -3,7 +3,9 @@ from mimetypes import MimeTypes
 from urllib.request import pathname2url
 from django.http import HttpResponse
 from django.shortcuts import render
-from text_to_video.logic import main
+from text_to_video.logic import main, SIZE, LENGH_IN_SECONDS, FPS
+from text_to_video.SQL import sql_main
+from datetime import datetime
 
 def get_handler(request):
     text = ""
@@ -17,7 +19,7 @@ def get_handler(request):
 def post_handler(request): 
     data = request.POST
     print(data)
-    text, size_x, size_y, fps = data['text'], data['size_x'], data['size_y'], data['fps']
+    text, size_x, size_y, fps, length = data['text'], data['size_x'], data['size_y'], data['fps'], data['length']
     size = (size_x, size_y)
     if text =='':
         get_handler(request)
@@ -39,20 +41,37 @@ def post_handler(request):
             fps = int(fps)
         except Exception:
             return get_handler(request)
-    return return_video(text,size, fps)
+    if length == '':
+        length = None
+    else:
+        length = int(length)
+    return return_video(text,size, fps, length)
 
-def return_video(text, size = None, fps = None ):
+
+def sql_insert(text, size, fps, length ):
+    if size == None:
+        size = SIZE
+    if fps == None:
+        fps = FPS
+    if length == None:
+        length = LENGH_IN_SECONDS
+    sql_main((datetime.today(), text, size[0], size[1], fps, length))
+
+    
+
+def return_video(text, size = None, fps = None, length = None ):
     file_name = "outp.mp4"
     mime = MimeTypes()
     url = pathname2url(file_name)
     mimetype = mime.guess_type(url)[0]
-    main(text, file_name, size, fps).release()
+    main(text, file_name, size, fps, length).release()
     file = open(file_name,'rb')
     response = HttpResponse(file.read(), content_type=mimetype)
     response['Content-Length'] = os.path.getsize(file_name)
     response['Content-Disposition'] = \
         "attachment; filename=\"%s\"; filename*=utf-8''%s" % \
         (file_name, file_name)
+    sql_insert(text, size, fps, length)
     return response
 
 def main_view(request):

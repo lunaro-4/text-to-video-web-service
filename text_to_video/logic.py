@@ -86,14 +86,16 @@ def cli_arg_handling():
         return (args[1], args[2])
     
 
-def main(text, outp = "outp.mp4", size = SIZE, fps = FPS):
+def main(text, outp = "outp.mp4", size = SIZE, fps = FPS, length = LENGH_IN_SECONDS):
     if size == None:
         size = SIZE
     if fps == None:
         fps = FPS
+    if length == None:
+        length = LENGH_IN_SECONDS
     base_img = BaseTextImage(text, "tnr.ttf").img
     shutil.rmtree(frames_folder) 
-    RenderTools.part_render_loop(base_img, frames_folder, size, fps)
+    RenderTools.part_render_loop(base_img, frames_folder, size, fps, length)
     return RenderTools.render_video(frames_folder,outp, size, fps)
 
 
