@@ -65,7 +65,7 @@ class RenderTools(object):
 
     @staticmethod
     def render_video(frames_folder: str, outp_path:str):
-        frames_list = sorted(glob.glob(str(frames_folder + '*.png')), key=len)
+        frames_list = sorted(glob.glob(str(frames_folder + '*.png')), key=lambda x: int(str(x)[:str(x).find('.')][str(x).find('/'):].replace('/','')))
 
         fourcc = cv2.VideoWriter_fourcc(*'mp4v')
         video_writer = cv2.VideoWriter(outp_path, fourcc, FPS, SIZE)

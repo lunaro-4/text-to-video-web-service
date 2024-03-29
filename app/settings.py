@@ -25,7 +25,8 @@ SECRET_KEY = 'django-insecure-85k)(u1+2l^ign753+-1&vu(dikb$_3=18dh#z%fvrgjq=apkx
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = ["lenient-learning-mongoose.ngrok-free.app"]
+ALLOWED_HOSTS = ["lenient-learning-mongoose.ngrok-free.app",
+                 "127.0.0.1"]
 
 
 # Application definition
