@@ -18,6 +18,9 @@ from django.core.management.utils import get_random_secret_key
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
 
+env = environ.Env()
+env_file = os.path.join(BASE_DIR, '.env')
+environ.Env.read_env(env_file)
 
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/5.0/howto/deployment/checklist/
@@ -26,23 +29,28 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = ["lenient-learning-mongoose.ngrok-free.app",
-                 "127.0.0.1"]
+try:
+    env('ALLOWED_HOSTS').split(" ")
+except Exception:
+    print("Hosts not specified in .env, appending defaults")
+    with open(env_file, 'a') as file:
+        file.write(f"ALLOWED_HOSTS=localhost 127.0.0.1 [::1]")
 
 
+ALLOWED_HOSTS = env('ALLOWED_HOSTS').split(" ")
 
-env = environ.Env()
-env_file = os.path.join(BASE_DIR, '.env')
-environ.Env.read_env(env_file)
+
                                                       
 try:
     env('SECRET_KEY')
 except Exception:
+    print("Secret key not found in .env, generating new one")
     with open(env_file, 'a') as file:
         file.write(f"SECRET_KEY={get_random_secret_key()}")
 
 # SECURITY WARNING: keep the secret key used in production secret!
 SECRET_KEY = env('SECRET_KEY')
+
 
 
 # Application definition
