@@ -2,3 +2,6 @@ work_start.sh
 frames/
 db.sqlite3
 outp.mp4
+app/__pycache__/
+text_to_video/__pycache__/
+text_to_video/migrations
