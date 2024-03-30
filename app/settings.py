@@ -10,7 +10,10 @@ For the full list of settings and their values, see
 https://docs.djangoproject.com/en/5.0/ref/settings/
 """
 
+import environ
+import os
 from pathlib import Path
+from django.core.management.utils import get_random_secret_key
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
@@ -19,14 +22,27 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/5.0/howto/deployment/checklist/
 
-# SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = 'django-insecure-85k)(u1+2l^ign753+-1&vu(dikb$_3=18dh#z%fvrgjq=apkx'
 
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
 ALLOWED_HOSTS = ["lenient-learning-mongoose.ngrok-free.app",
                  "127.0.0.1"]
+
+
+
+env = environ.Env()
+env_file = os.path.join(BASE_DIR, '.env')
+environ.Env.read_env(env_file)
+                                                      
+try:
+    env('SECRET_KEY')
+except Exception:
+    with open(env_file, 'a') as file:
+        file.write(f"SECRET_KEY={get_random_secret_key()}")
+
+# SECURITY WARNING: keep the secret key used in production secret!
+SECRET_KEY = env('SECRET_KEY')
 
 
 # Application definition
