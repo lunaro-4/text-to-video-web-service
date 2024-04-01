@@ -34,7 +34,7 @@ try:
 except Exception:
     print("Hosts not specified in .env, appending defaults")
     with open(env_file, 'a') as file:
-        file.write(f"ALLOWED_HOSTS=localhost 127.0.0.1 [::1]")
+        file.write(f"\nALLOWED_HOSTS=localhost 127.0.0.1 [::1]")
 
 
 ALLOWED_HOSTS = env('ALLOWED_HOSTS').split(" ")
@@ -46,7 +46,7 @@ try:
 except Exception:
     print("Secret key not found in .env, generating new one")
     with open(env_file, 'a') as file:
-        file.write(f"SECRET_KEY={get_random_secret_key()}")
+        file.write(f"\nSECRET_KEY={get_random_secret_key()}")
 
 # SECURITY WARNING: keep the secret key used in production secret!
 SECRET_KEY = env('SECRET_KEY')
