@@ -34,11 +34,11 @@ try:
 except Exception:
     print("Hosts not specified in .env, appending defaults")
     with open(env_file, 'a') as file:
-        file.write(f"\nALLOWED_HOSTS=localhost 127.0.0.1 [::1]")
+        file.write(f"\nALLOWED_HOSTS=localhost 127.0.0.1 lenient-learning-mongoose.ngrok-free.app  https//:lenient-learning-mongoose.ngrok-free.app [::1]")
 
 
 ALLOWED_HOSTS = env('ALLOWED_HOSTS').split(" ")
-
+print(ALLOWED_HOSTS)
 
                                                       
 try:
