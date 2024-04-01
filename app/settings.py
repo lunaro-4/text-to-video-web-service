@@ -34,11 +34,10 @@ try:
 except Exception:
     print("Hosts not specified in .env, appending defaults")
     with open(env_file, 'a') as file:
-        file.write(f"\nALLOWED_HOSTS=localhost 127.0.0.1 lenient-learning-mongoose.ngrok-free.app  https//:lenient-learning-mongoose.ngrok-free.app [::1]")
+        file.write(f"\nALLOWED_HOSTS=localhost 127.0.0.1 lenient-learning-mongoose.ngrok-free.app [::1]")
 
 
 ALLOWED_HOSTS = env('ALLOWED_HOSTS').split(" ")
-print(ALLOWED_HOSTS)
 
                                                       
 try:
@@ -147,3 +146,9 @@ STATIC_URL = 'static/'
 # https://docs.djangoproject.com/en/5.0/ref/settings/#default-auto-field
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
+
+CSRF_COOKIE_DOMAIN = None
+CSRF_TRUSTED_ORIGINS = [
+    'http://localhost:8000',
+    'lenient-learning-mongoose.ngrok-free.app'
+],

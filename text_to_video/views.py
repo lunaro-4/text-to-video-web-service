@@ -66,7 +66,7 @@ def return_video(text, size = None, fps = None, length = None ):
     mimetype = mime.guess_type(url)[0]
     main(text, file_name, size, fps, length).release()
     file = open(file_name,'rb')
-    response = HttpResponse(file.read(), content_type=mimetype)
+    response = HttpResponse(file.read(), content_type=mimetype, context= RequestContext(request))
     response['Content-Length'] = os.path.getsize(file_name)
     response['Content-Disposition'] = \
         "attachment; filename=\"%s\"; filename*=utf-8''%s" % \
