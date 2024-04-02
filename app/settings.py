@@ -46,6 +46,8 @@ except Exception:
     print("Secret key not found in .env, generating new one")
     with open(env_file, 'a') as file:
         file.write(f"\nSECRET_KEY={get_random_secret_key()}")
+    print("Generating complete, please restart the app")
+    exit()
 
 # SECURITY WARNING: keep the secret key used in production secret!
 SECRET_KEY = env('SECRET_KEY')
@@ -68,10 +70,11 @@ MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.middleware.common.CommonMiddleware',
-    'django.middleware.csrf.CsrfViewMiddleware',
+    # 'django.middleware.csrf.CsrfViewMiddleware',
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
+    'corsheaders.middleware.CorsMiddleware',
 ]
 
 ROOT_URLCONF = 'app.urls'
@@ -147,8 +150,5 @@ STATIC_URL = 'static/'
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
-CSRF_COOKIE_DOMAIN = None
-CSRF_TRUSTED_ORIGINS = [
-    'http://localhost:8000',
-    'lenient-learning-mongoose.ngrok-free.app'
-],
+# CSRF_COOKIE_DOMAIN = None
+#CSRF_TRUSTED_ORIGINS = ['http://localhost:8000', 'https://lenient-learning-mongoose.ngrok-free.app'],

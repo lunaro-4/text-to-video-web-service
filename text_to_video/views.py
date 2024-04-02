@@ -6,7 +6,13 @@ from django.shortcuts import render
 from text_to_video.logic import main, SIZE, LENGH_IN_SECONDS, FPS
 from text_to_video.SQL import sql_main
 from datetime import datetime
+from django.views.decorators.csrf import csrf_exempt
 
+
+
+
+
+@csrf_exempt
 def get_handler(request):
     text = ""
     context = {}
@@ -16,6 +22,7 @@ def get_handler(request):
         return render(request=request, template_name='video_form.html', context=context)
     return return_video(text)
 
+@csrf_exempt
 def post_handler(request): 
     data = request.POST
     print(data)
@@ -48,6 +55,7 @@ def post_handler(request):
     return return_video(text,size, fps, length)
 
 
+@csrf_exempt
 def sql_insert(text, size, fps, length ):
     if size == None:
         size = SIZE
@@ -59,6 +67,7 @@ def sql_insert(text, size, fps, length ):
 
     
 
+@csrf_exempt
 def return_video(text, size = None, fps = None, length = None ):
     file_name = "outp.mp4"
     mime = MimeTypes()
@@ -66,7 +75,7 @@ def return_video(text, size = None, fps = None, length = None ):
     mimetype = mime.guess_type(url)[0]
     main(text, file_name, size, fps, length).release()
     file = open(file_name,'rb')
-    response = HttpResponse(file.read(), content_type=mimetype, context= RequestContext(request))
+    response = HttpResponse(file.read(), content_type=mimetype)
     response['Content-Length'] = os.path.getsize(file_name)
     response['Content-Disposition'] = \
         "attachment; filename=\"%s\"; filename*=utf-8''%s" % \
@@ -74,6 +83,8 @@ def return_video(text, size = None, fps = None, length = None ):
     sql_insert(text, size, fps, length)
     return response
 
+
+@csrf_exempt
 def main_view(request):
     if request.method == 'GET':
         return get_handler(request)
@@ -82,5 +93,6 @@ def main_view(request):
         
 
 
+@csrf_exempt
 def show_home(request):
     return render(request=request, template_name='home.html')
