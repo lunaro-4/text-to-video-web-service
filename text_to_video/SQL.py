@@ -3,6 +3,26 @@ from os.path import isfile
 import sqlite3
 
 
+"""
+
+
+
+    LEGACY CODE, UNUSED
+
+
+    # sql_main((datetime.today(), text, size[0], size[1], fps, length))
+
+
+
+
+"""
+
+
+
+
+
+
+
 con = sqlite3.connect("db.sqlite3", check_same_thread=False)
 cur = con.cursor()
 

@@ -7,6 +7,7 @@ from text_to_video.logic import main, SIZE, LENGH_IN_SECONDS, FPS
 from text_to_video.SQL import sql_main
 from datetime import datetime
 from django.views.decorators.csrf import csrf_exempt
+from .models import RequestRecord
 
 
 
@@ -63,7 +64,9 @@ def sql_insert(text, size, fps, length ):
         fps = FPS
     if length == None:
         length = LENGH_IN_SECONDS
-    sql_main((datetime.today(), text, size[0], size[1], fps, length))
+    r = RequestRecord(date_field = datetime.today(), text_field = text, size_x_field = size[0], size_y_field = size[1],
+                      fps_field = fps, length_field = length)
+    r.save()
 
     
 
